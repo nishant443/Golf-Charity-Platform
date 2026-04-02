@@ -293,26 +293,47 @@ router.delete('/charities/:id', async (req, res) => {
 // ── WINNER VERIFICATION ────────────────────────────────────
 
 // GET /api/admin/verifications
+// router.get('/verifications', async (req, res) => {
+//   try {
+//     const { status } = req.query;
+//     let query = supabase
+//       .from('winner_verifications')
+//       .select(`
+//         *,
+//         user:users(id, email, full_name),
+//         draw:draws(month, year, drawn_numbers),
+//         entry:draw_entries(match_type, match_count, prize_amount, scores)
+//       `)
+//       .order('created_at', { ascending: false });
+
+//     if (status) query = query.eq('payment_status', status);
+
+//     const { data, error } = await query;
+//     if (error) throw error;
+//     res.json({ verifications: data });
+//   } catch (err) {
+//     res.status(500).json({ error: 'Failed to fetch verifications' });
+//   }
+// });
 router.get('/verifications', async (req, res) => {
   try {
     const { status } = req.query;
+
     let query = supabase
       .from('winner_verifications')
-      .select(`
-        *,
-        user:users(id, email, full_name),
-        draw:draws(month, year, drawn_numbers),
-        entry:draw_entries(match_type, match_count, prize_amount, scores)
-      `)
+      .select('*') // ✅ remove joins
       .order('created_at', { ascending: false });
 
     if (status) query = query.eq('payment_status', status);
 
     const { data, error } = await query;
+
     if (error) throw error;
+
     res.json({ verifications: data });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch verifications' });
+    console.error(err); // ✅ add this
+    res.status(500).json({ error: err.message });
   }
 });
 

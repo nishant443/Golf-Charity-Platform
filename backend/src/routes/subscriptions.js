@@ -92,13 +92,18 @@ router.post(
         payment_method_types: ['card'],
         mode: 'subscription',
         line_items: [{ price: price.id, quantity: 1 }],
+
         success_url: `${process.env.FRONTEND_URL}/dashboard?subscription=success`,
         cancel_url: `${process.env.FRONTEND_URL}/subscribe?cancelled=true`,
-        metadata: {
-          user_id: req.user.id,
-          plan,
-          charity_id,
-          charity_percentage: String(charity_percentage),
+
+        // ✅ THIS IS THE FIX
+        subscription_data: {
+          metadata: {
+            user_id: req.user.id,
+            plan,
+            charity_id,
+            charity_percentage: String(charity_percentage),
+          },
         },
       });
 
