@@ -21,6 +21,7 @@ router.post('/stripe', express.raw({ type: 'application/json' }), async (req, re
       case 'checkout.session.completed': {
         const session = event.data.object;
 
+
         // Step 1: get subscription id
         let subscriptionId = session.subscription;
         let subscription = null;
